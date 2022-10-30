@@ -10,7 +10,8 @@
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "remix dev",
     "generate:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
-    "start": "cross-env NODE_ENV=production netlify dev"
+    "start": "cross-env NODE_ENV=production netlify dev",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@netlify/functions": "^1.0.0",
