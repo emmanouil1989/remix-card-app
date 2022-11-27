@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+:root {
+    --hs-links: 48 100%;
+    --color-background: #f9f4ef;
+    --secondary: #eaddcf;
+    --color-text: #716040;
+    --color-headline: #020826;
+    --color-button: #8c7851;
+    --color-button-text: #fffffe;
+    --stroke: #020826;
+    --tertiary: #f25042;
+    --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
+    Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
+    --font-display: baloo, var(--font-body);
+}
+
+body{
+    font-family: var(--font-body);
+    line-height: 1.5;
+    background-repeat: no-repeat;
+    height: 100vh;
+    background-color: var(--color-background);
+    position: relative;
+}
