@@ -17,9 +17,22 @@
     --font-body: -apple-system, "Segoe UI", Helvetica Neue, Helvetica, Roboto,
     Arial, sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji";
     --font-display: baloo, var(--font-body);
+    --font-size: 1.3rem;
 }
 
+
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+
 body{
+    padding: 0;
+    margin: 0;
     font-family: var(--font-body);
     line-height: 1.5;
     background-repeat: no-repeat;
