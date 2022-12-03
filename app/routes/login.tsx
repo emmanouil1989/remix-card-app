@@ -6,12 +6,10 @@ export default function Login() {
 
   return (
     <section
-      className={
-        "w-full h-full flex justify-center items-center flex-col bg-gray-100"
-      }
+      className={"w-full h-full flex justify-center items-center flex-col"}
     >
       <h1>Login</h1>
-      <form method={"post"} className={" min-h-max p-8 w-4/12 "}>
+      <form method={"post"} className={" min-h-max p-8 w-3/12 "}>
         <input
           type="hidden"
           name="redirectTo"
