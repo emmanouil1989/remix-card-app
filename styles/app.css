@@ -37,7 +37,5 @@ body{
     font-size: var(--font-size);
     background-repeat: no-repeat;
     height: 100vh;
-    background-color: var(--color-background);
     position: relative;
-    color:var(--color-text);
 }
