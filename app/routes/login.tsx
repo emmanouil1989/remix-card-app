@@ -1,4 +1,4 @@
-import {useSearchParams} from "@remix-run/react"
+import {Link, useSearchParams} from "@remix-run/react"
 import Button from "~/components/button/Button"
 
 export default function Login() {
@@ -24,7 +24,14 @@ export default function Login() {
           <input type={"password"} name={"password"} id={"password-input"} />
         </div>
         <div className={"flex row justify-between items-center w-full"}>
-          <Button type={"submit"}>Sign up</Button>
+          <Link
+            className={
+              " bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            }
+            to={"/register"}
+          >
+            Sign Up
+          </Link>
           <Button type={"submit"}>Login</Button>
         </div>
       </form>
