@@ -13,18 +13,18 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(uuid())
-  email     String   @unique(map: "User.email_unique")
-  password  String
-  firstName String
-  lastName  String
-  mobilePhone String
-  @@map("user")
+  id            String      @id @default(uuid())
+  email         String      @unique(map: "User.email_unique")
+  password      String
+  firstName     String
+  lastName      String
+  mobilePhone   String
 
-  role      Role     @default(USER)
-  bookings  Booking[]
-  sessions Session[]
 
+  role          Role        @default(USER)
+  bookings      Booking[]
+  sessions      Session[]
+    @@map("user")
 }
 
 enum Role {
@@ -34,52 +34,52 @@ enum Role {
 
 
 model Session {
-  id             String   @id @default(uuid())
-  createdAt      DateTime @default(now())
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
-  expirationDate DateTime
+  id                String   @id @default(uuid())
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  expirationDate    DateTime
   @@map("session")
 }
 model Store {
-  id        String      @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String
-  address   String
-  city      String
-  postalCode   String
-  country   String
-  phone     String
-  email     String
-  services  Service[]
+  id            String      @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  address       String
+  city          String
+  postalCode    String
+  country       String
+  phone         String
+  email         String
+  services      Service[]
   bookings     Booking[]
   @@map("store")
 }
 
 model Service {
-    id        String      @id @default(uuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id        String        @id @default(uuid())
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
     name      String
-    duration  Int
+    duration  Int?
     price     Int
-    store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+    store     Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
     storeId   String
-    enabled   Boolean  @default(true)
-    booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-    bookingId String
+    enabled   Boolean       @default(true)
+    booking   Booking?       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+    bookingId String?
     @@map("service")
 }
 
 model Booking {
   id        String      @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   services Service[]
-  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  store     Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   storeId   String
   start     DateTime
   end       DateTime
