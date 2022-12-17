@@ -29,6 +29,18 @@ async function main() {
       role: "ADMIN",
     },
   })
+
+  await prisma.store.create({
+    data: {
+      name: "Barber Shop 1963",
+      address: "Grammou 12",
+      city: "Kastoria",
+      country: "Greece",
+      postalCode: "52100",
+      phone: faker.phone.number(),
+      email: faker.internet.email(),
+    },
+  })
 }
 
 main()

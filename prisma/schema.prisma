@@ -48,7 +48,7 @@ model Store {
   name      String
   address   String
   city      String
-  zipCode   String
+  postalCode   String
   country   String
   phone     String
   email     String
