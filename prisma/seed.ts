@@ -1,10 +1,4 @@
-import {
-  PrismaClient,
-  Role,
-  Prisma,
-  StoreServices,
-  Service,
-} from "@prisma/client";
+import { PrismaClient, Role, Prisma, StoreServices } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bycript from "bcrypt";
 
