@@ -1,15 +1,23 @@
-import { PrismaClient, Role, Prisma } from "@prisma/client";
+import {
+  PrismaClient,
+  Role,
+  Prisma,
+  StoreServices,
+  Service,
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bycript from "bcrypt";
 
 const prisma = new PrismaClient();
+
+const services = ["Male Haircut", "Beard Trim", "Shave", "Haircut & Hair Wash"];
 
 async function userFactory(
   index: number,
   storeId: string,
 ): Promise<Prisma.UserCreateInput> {
   const hashedPassword = await bycript.hash("password1", 10);
-
+  const service = await serviceFactory();
   return {
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
@@ -18,13 +26,30 @@ async function userFactory(
     mobilePhone: faker.phone.number(),
     role: Role.USER,
     bookings: {
-      create: bookingsFactory(storeId),
+      create: bookingsFactory(storeId, service),
     },
   };
 }
 
+const serviceFactory = async (): Promise<Prisma.ServiceCreateInput> => {
+  const services = await prisma.storeServices.findMany();
+  const storeService = getRandomService(services);
+  return {
+    storeService: {
+      connect: {
+        id: storeService.id,
+      },
+    },
+  };
+};
+
+function getRandomService(services: Array<StoreServices>) {
+  return services[Math.floor(Math.random() * services.length)];
+}
+
 function bookingsFactory(
   storeId: string,
+  service: Prisma.ServiceCreateInput,
 ): Array<Prisma.BookingCreateWithoutUserInput> {
   return [
     {
@@ -33,21 +58,24 @@ function bookingsFactory(
           id: storeId,
         },
       },
+      services: {
+        create: {
+          ...service,
+        },
+      },
       start: faker.date.future(),
       end: faker.date.future(),
     },
   ];
 }
 
-function servicesFactory(): Array<Prisma.ServiceCreateWithoutStoreInput> {
-  return ["Male Haircut", "Beard Trim", "Shave", "Haircut & Hair Wash"].map(
-    function mapToService(serviceName) {
-      return {
-        name: serviceName,
-        price: Number(faker.commerce.price()),
-      };
-    },
-  );
+function storeServicesFactory(): Array<Prisma.StoreServicesCreateWithoutStoreInput> {
+  return services.map(function mapToService(serviceName) {
+    return {
+      name: serviceName,
+      price: Number(faker.commerce.price()),
+    };
+  });
 }
 
 async function main() {
@@ -64,8 +92,8 @@ async function main() {
       postalCode: "52100",
       phone: faker.phone.number(),
       email: faker.internet.email(),
-      services: {
-        create: servicesFactory(),
+      storeServices: {
+        create: storeServicesFactory(),
       },
     },
   });

@@ -42,34 +42,45 @@ model Session {
   @@map("session")
 }
 model Store {
-  id            String      @id @default(uuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  name          String
-  address       String
-  city          String
-  postalCode    String
-  country       String
-  phone         String
-  email         String
-  services      Service[]
-  bookings     Booking[]
+  id                String      @id @default(uuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  name              String
+  address           String
+  city              String
+  postalCode        String
+  country           String
+  phone             String
+  email             String
+  storeServices     StoreServices[]
+  bookings          Booking[]
   @@map("store")
 }
 
-model Service {
+model StoreServices {
     id        String        @id @default(uuid())
     createdAt DateTime      @default(now())
     updatedAt DateTime      @updatedAt
     name      String
-    duration  Int?
     price     Int
     store     Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
     storeId   String
+    services  Service[]
     enabled   Boolean       @default(true)
-    booking   Booking?       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-    bookingId String?
-    @@map("service")
+    @@map("store_services")
+
+}
+
+model Service {
+    id              String            @id @default(uuid())
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+    duration        Int?
+    storeService    StoreServices     @relation(fields: [storeServiceId], references: [id], onDelete: Cascade)
+    storeServiceId  String
+    booking         Booking?          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+    bookingId       String?
+    @@map("services")
 }
 
 model Booking {
@@ -78,10 +89,10 @@ model Booking {
   updatedAt DateTime    @updatedAt
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  services Service[]
+  services  Service[]
   store     Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   storeId   String
   start     DateTime
   end       DateTime
-  @@map("booking")
+  @@map("bookings")
 }
