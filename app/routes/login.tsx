@@ -22,7 +22,6 @@ export const validator = withZod(
 
 export async function action({ request }: ActionArgs) {
   const fieldValues = await validator.validate(await request.formData());
-  console.log(fieldValues);
   if (fieldValues.error) return validationError(fieldValues.error);
   const redirectTo = fieldValues.submittedData.redirectTo || "/";
   const { email, password } = fieldValues.data;
