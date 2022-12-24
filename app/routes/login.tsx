@@ -1,15 +1,67 @@
-import {Link, useSearchParams} from "@remix-run/react"
-import Button from "~/components/button/Button"
+import { Link, useSearchParams } from "@remix-run/react";
+import Button from "~/components/button/Button";
+import { ActionArgs, json, LoaderArgs, redirect } from "@remix-run/node";
+import { authenticator, login } from "~/services/auth.server";
+import {
+  commitSession,
+  sessionStorage,
+  setCookieExpires,
+} from "~/services/session.server";
+import { withZod } from "@remix-validated-form/with-zod";
+import z from "zod";
+import { ValidatedForm, validationError } from "remix-validated-form";
+
+export const validator = withZod(
+  z.object({
+    email: z
+      .string()
+      .min(1, { message: "Email is required" })
+      .email("Must be a valid email"),
+    password: z.string().min(1, { message: "Password is required" }),
+  }),
+);
+
+export async function action({ request }: ActionArgs) {
+  const fieldValues = await validator.validate(await request.formData());
+  if (fieldValues.error) return validationError(fieldValues.error);
+  const redirectTo = fieldValues.submittedData.redirectTo || "/";
+  const { email, password } = fieldValues.data;
+  const user = await login(email, password);
+
+  if (!user) return json({ errors: "Invalid credentials!" });
+  // if (user && !use) return json({ errors: 'Your email not verified!' })
+
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie"),
+  );
+  session.set(authenticator.sessionKey, user.id);
+
+  return redirect(redirectTo, {
+    headers: {
+      "Set-Cookie": await sessionStorage.commitSession(session),
+    },
+  });
+}
+
+export async function loader({ request }: LoaderArgs) {
+  return await authenticator.isAuthenticated(request, {
+    successRedirect: "/",
+  });
+}
 
 export default function Login() {
-  const [params] = useSearchParams()
+  const [params] = useSearchParams();
 
   return (
     <section
       className={"w-full h-full flex justify-center items-center flex-col"}
     >
       <h1>Login</h1>
-      <form method={"post"} className={" min-h-max p-8 w-3/12 "}>
+      <ValidatedForm
+        method={"post"}
+        validator={validator}
+        className={" min-h-max p-8 w-3/12 "}
+      >
         <input
           type="hidden"
           name="redirectTo"
@@ -34,7 +86,7 @@ export default function Login() {
           </Link>
           <Button type={"submit"}>Login</Button>
         </div>
-      </form>
+      </ValidatedForm>
     </section>
-  )
+  );
 }

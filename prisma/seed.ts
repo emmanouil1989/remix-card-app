@@ -77,6 +77,7 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.service.deleteMany();
   await prisma.booking.deleteMany();
+  await prisma.session.deleteMany();
   await prisma.store.create({
     data: {
       name: "Barber Shop 1963",
