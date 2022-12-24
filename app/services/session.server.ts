@@ -31,11 +31,9 @@ export const createDatabaseSessionStorage = (
       return session.id;
     },
     async readData(id) {
-      const session = await prisma.session.findUnique({
+      return await prisma.session.findUnique({
         where: { id },
       });
-
-      return session;
     },
     async updateData(id, data, expires) {
       await prisma.session.update({
@@ -66,7 +64,7 @@ export const sessionStorage = createDatabaseSessionStorage({
 
 async function clearSessions() {
   const date = new Date();
-  date.setDate(date.getDate() - 8);
+  date.setDate(date.getDate() - 2);
   await prisma.session.deleteMany({
     where: {
       expirationDate: {
@@ -80,9 +78,7 @@ export const setCookieExpires = () => {
   let utcTimeStamp = new Date();
   let epochTime = utcTimeStamp.getTime() / 1000.0;
   let timestamp = Math.floor(epochTime + SESSION_EXPIRES);
-  let expires = new Date(timestamp * 1000);
-
-  return expires;
+  return new Date(timestamp * 1000);
 };
 
 export const expiresToSeconds = (expires: Date | null): number | null => {
