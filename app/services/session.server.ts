@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
-const SESSION_EXPIRES = 60 * 2;
+const SESSION_EXPIRES = 60 * 60 * 24; // 1 day
 
 export const createDatabaseSessionStorage = (
   cookie:
@@ -17,6 +17,7 @@ export const createDatabaseSessionStorage = (
   return createSessionStorage({
     cookie,
     async createData(data, expires) {
+      await clearSessions();
       const session = await prisma.session.create({
         data: {
           user: {
@@ -58,10 +59,22 @@ export const sessionStorage = createDatabaseSessionStorage({
   sameSite: "lax",
   path: "/",
   httpOnly: true,
-  maxAge: 60 * 2, // 4 minutes
+  maxAge: SESSION_EXPIRES,
   secrets: [process.env.SESSION_SECRET],
   secure: process.env.NODE_ENV === "production",
 });
+
+async function clearSessions() {
+  const date = new Date();
+  date.setDate(date.getDate() - 8);
+  await prisma.session.deleteMany({
+    where: {
+      expirationDate: {
+        lte: date,
+      },
+    },
+  });
+}
 
 export const setCookieExpires = () => {
   let utcTimeStamp = new Date();
@@ -70,4 +83,14 @@ export const setCookieExpires = () => {
   let expires = new Date(timestamp * 1000);
 
   return expires;
+};
+
+export const expiresToSeconds = (expires: Date | null): number | null => {
+  if (!expires) {
+    return null;
+  }
+  let utcTimeStamp = new Date(expires);
+  let epochTime = utcTimeStamp.getTime() / 1000.0;
+
+  return Math.floor(epochTime + SESSION_EXPIRES);
 };

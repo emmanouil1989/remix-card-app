@@ -1,4 +1,4 @@
-process.env.RUNNING_PRETTIER = "true"
+process.env.RUNNING_PRETTIER = "true";
 module.exports = {
   arrowParens: "avoid",
   bracketSpacing: true,
@@ -14,4 +14,4 @@ module.exports = {
   requirePragma: false,
   semi: true,
   trailingComma: "all",
-}
+};

@@ -2,11 +2,7 @@ import { Link, useSearchParams } from "@remix-run/react";
 import Button from "~/components/button/Button";
 import { ActionArgs, json, LoaderArgs, redirect } from "@remix-run/node";
 import { authenticator, login } from "~/services/auth.server";
-import {
-  commitSession,
-  sessionStorage,
-  setCookieExpires,
-} from "~/services/session.server";
+import { sessionStorage } from "~/services/session.server";
 import { withZod } from "@remix-validated-form/with-zod";
 import z from "zod";
 import { ValidatedForm, validationError } from "remix-validated-form";
@@ -36,11 +32,11 @@ export async function action({ request }: ActionArgs) {
   );
   session.set(authenticator.sessionKey, user.id);
 
-  return redirect(redirectTo, {
-    headers: {
-      "Set-Cookie": await sessionStorage.commitSession(session),
-    },
+  const headers = new Headers({
+    "Set-Cookie": await sessionStorage.commitSession(session),
   });
+
+  return redirect(redirectTo, { headers });
 }
 
 export async function loader({ request }: LoaderArgs) {
