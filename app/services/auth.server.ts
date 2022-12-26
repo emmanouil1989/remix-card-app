@@ -4,6 +4,8 @@ import { FormStrategy } from "remix-auth-form";
 import invariant from "tiny-invariant";
 import { prisma } from "~/db.server";
 import bcrypt from "bcrypt";
+import { addDays } from "date-fns";
+import { encrypt } from "~/services/encryption.server";
 
 export const authenticator = new Authenticator<string | null>(sessionStorage, {
   sessionKey: "userId",
@@ -41,4 +43,17 @@ export const login = async (email: string, hashedPassword: string) => {
   if (!isCorrectPassword) return null;
 
   return user;
+};
+
+export const createVerificationToken = async (userId: string) => {
+  const expDate = addDays(new Date(), 7);
+  const token = encrypt(userId);
+
+  return await prisma.verificationToken.create({
+    data: {
+      userId: userId,
+      expires: expDate,
+      token,
+    },
+  });
 };

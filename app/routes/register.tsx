@@ -1,42 +1,111 @@
-import React from "react"
-import Button from "~/components/button/Button"
+import React from "react";
+import { withZod } from "@remix-validated-form/with-zod";
+import z from "zod";
+import { ValidatedForm, validationError } from "remix-validated-form";
+import { Input } from "~/components/Form/Input/Input";
+import { SubmitButton } from "~/components/Form/SubmitButton/SubmitButton";
+import { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { authenticator, createVerificationToken } from "~/services/auth.server";
+import { getUserByEmailAddress, registerUser } from "~/services/user.server";
+const validator = withZod(
+  z
+    .object({
+      email: z
+        .string()
+        .min(1, { message: "Email is required" })
+        .email("Must be a valid email"),
+      password: z.string().min(8, { message: "Bust be at least 8 characters" }),
+      confirmPassword: z
+        .string()
+        .min(8, { message: "Bust be at least 8 characters" }),
+      firstName: z.string().min(1, { message: "First name is required" }),
+      lastName: z.string().min(1, { message: "Last name is required" }),
+      mobile: z.string().min(1, { message: "Mobile is required" }),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    })
+    .refine(
+      data => {
+        const phoneRegExp =
+          /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+        return phoneRegExp.test(data.mobile);
+      },
+      {
+        message: "Enter a valid phone number",
+        path: ["mobile"],
+      },
+    ),
+);
+
+export async function loader({ request }: LoaderArgs) {
+  await authenticator.isAuthenticated(request, {
+    successRedirect: "/",
+  });
+}
+
+export async function action({ request }: ActionArgs) {
+  const fieldValues = await validator.validate(await request.formData());
+  if (fieldValues.error) return validationError(fieldValues.error);
+
+  const { email, password, firstName, lastName, mobile } = fieldValues.data;
+  const existingUser = await getUserByEmailAddress(email);
+  if (existingUser) {
+    return validationError({
+      fieldErrors: { email: "User with this email already exist" },
+    });
+  }
+
+  const user = await registerUser({
+    email,
+    password,
+    firstName,
+    lastName,
+    mobilePhone: mobile,
+  });
+
+  const tokem = await createVerificationToken(user.id);
+  //send email with token
+}
 export default function Register() {
   return (
     <section className={"flex items-center justify-center h-full flex-col"}>
       <h1>Register</h1>
-      <form
+      <ValidatedForm
+        validator={validator}
         method={"post"}
         className={"flex flex-col items-start justify-between w-3/12"}
       >
         <div className={"flex flex-col w-full justify-between py-4"}>
-          <label htmlFor={"first-name-input"}>First Name:</label>
-          <input
-            className={"block"}
-            type={"text"}
-            name={"name"}
-            id={"name-input"}
+          <Input name={"firstName"} label={"First Name"} type={"text"} />
+        </div>
+        <div className={"flex flex-col w-full justify-between py-4"}>
+          <Input name={"lastName"} label={"Last Name:"} type={"text"} />
+        </div>
+        <div className={"flex flex-col w-full justify-between py-4"}>
+          <Input name={"email"} label={"Email:"} type={"email"} />
+        </div>
+        <div className={"flex flex-col w-full justify-between py-4"}>
+          <Input name={"password"} label={"Password:"} type={"password"} />
+        </div>
+        <div className={"flex flex-col w-full justify-between py-4"}>
+          <Input
+            name={"confirmPassword"}
+            label={"Confirm Password:"}
+            type={"password"}
           />
         </div>
         <div className={"flex flex-col w-full justify-between py-4"}>
-          <label htmlFor={"last-name-input"}>Last Name:</label>
-          <input type={"text"} name={"name"} id={"name-input"} />
-        </div>
-        <div className={"flex flex-col w-full justify-between py-4"}>
-          <label htmlFor="email-input">Email:</label>
-          <input type={"email"} name={"email"} id={"email-input"} />
-        </div>
-        <div className={"flex flex-col w-full justify-between py-4"}>
-          <label htmlFor="password-input">Password:</label>
-          <input type={"password"} name={"password"} id={"password-input"} />
-        </div>
-        <div className={"flex flex-col w-full justify-between py-4"}>
-          <label htmlFor={"mobile-input"}>Mobile:</label>
-          <input type={"tel"} name={"mobile"} id={"mobile-input"} />
+          <Input name={"mobile"} label={"Mobile:"} type={"text"} />
         </div>
         <div className={"flex justify-center w-full items-center"}>
-          <Button type={"submit"}>Register</Button>
+          <SubmitButton
+            submitText={"Register"}
+            submittingText={"Registering.."}
+          />
         </div>
-      </form>
+      </ValidatedForm>
     </section>
-  )
+  );
 }

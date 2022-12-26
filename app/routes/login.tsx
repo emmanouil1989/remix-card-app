@@ -19,7 +19,6 @@ export const validator = withZod(
     password: z.string().min(8, { message: "Bust be at least 8 characters" }),
   }),
 );
-
 export async function action({ request }: ActionArgs) {
   const fieldValues = await validator.validate(await request.formData());
   if (fieldValues.error) return validationError(fieldValues.error);

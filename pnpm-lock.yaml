@@ -12,12 +12,14 @@ specifiers:
   '@remix-run/serve': ^1.7.2
   '@remix-validated-form/with-zod': ^2.0.5
   '@types/bcrypt': ^5.0.0
+  '@types/nodemailer': ^6.4.7
   '@types/react': ^18.0.15
   '@types/react-dom': ^18.0.6
   autoprefixer: ^10.4.12
   bcrypt: ^5.1.0
   concurrently: ^7.4.0
   cross-env: ^7.0.3
+  date-fns: ^2.29.3
   eslint: ^8.23.1
   npm-run-all: ^4.1.5
   postcss: ^8.4.18
@@ -43,8 +45,10 @@ dependencies:
   '@remix-run/react': 1.9.0_biqbaboplfbrettd7655fr4n2y
   '@remix-validated-form/with-zod': 2.0.5_rqrmxanbp4auopgc5i2ctdcugi
   '@types/bcrypt': 5.0.0
+  '@types/nodemailer': 6.4.7
   bcrypt: 5.1.0
   cross-env: 7.0.3
+  date-fns: 2.29.3
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   remix-auth: 3.4.0_gfmlisc6bgt7ev2etk2pcunm4q
@@ -2206,6 +2210,12 @@ packages:
   /@types/node/18.11.16:
     resolution: {integrity: sha512-6T7P5bDkRhqRxrQtwj7vru+bWTpelgtcETAZEUSdq0YISKz8WKdoBukQLYQQ6DFHvU9JRsbFq0JH5C51X2ZdnA==}
 
+  /@types/nodemailer/6.4.7:
+    resolution: {integrity: sha512-f5qCBGAn/f0qtRcd4SEn88c8Fp3Swct1731X4ryPKqS61/A3LmmzN8zaEz7hneJvpjFbUUgY7lru/B/7ODTazg==}
+    dependencies:
+      '@types/node': 18.11.16
+    dev: false
+
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
     dev: true
@@ -3271,7 +3281,6 @@ packages:
   /date-fns/2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
     engines: {node: '>=0.11'}
-    dev: true
 
   /deasync/0.1.28:
     resolution: {integrity: sha512-QqLF6inIDwiATrfROIyQtwOQxjZuek13WRYZ7donU5wJPLoP67MnYxA6QtqdvdBy2mMqv5m3UefBVdJjvevOYg==}
