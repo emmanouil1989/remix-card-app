@@ -6,6 +6,7 @@ import { prisma } from "~/db.server";
 import bcrypt from "bcrypt";
 import { addDays } from "date-fns";
 import { encrypt } from "~/services/encryption.server";
+import { VerificationToken } from "@prisma/client";
 
 export const authenticator = new Authenticator<string | null>(sessionStorage, {
   sessionKey: "userId",
@@ -45,9 +46,12 @@ export const login = async (email: string, hashedPassword: string) => {
   return user;
 };
 
-export const createVerificationToken = async (userId: string) => {
+export const createVerificationToken = async (
+  userId: string,
+  email: string,
+) => {
   const expDate = addDays(new Date(), 7);
-  const token = encrypt(userId);
+  const token = encrypt(email);
 
   return await prisma.verificationToken.create({
     data: {
@@ -57,3 +61,25 @@ export const createVerificationToken = async (userId: string) => {
     },
   });
 };
+
+export async function getVerificationToken(token: string) {
+  return await prisma.verificationToken.findUnique({ where: { token } });
+}
+
+export async function deleteVerificationToken(token: string) {
+  return await prisma.verificationToken.delete({ where: { token } });
+}
+
+export async function verifyEmail(verificationToken: VerificationToken) {
+  const user = await prisma.user.update({
+    where: {
+      id: verificationToken.userId,
+    },
+    data: {
+      emailVerifiedAt: new Date(),
+    },
+  });
+  await deleteVerificationToken(verificationToken.token);
+
+  return user;
+}

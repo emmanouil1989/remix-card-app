@@ -5,13 +5,13 @@ import { Form } from "@remix-run/react";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
+    failureRedirect: "/auth/login",
   });
   return json({ userId });
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  await authenticator.logout(request, { redirectTo: "/login" });
+  await authenticator.logout(request, { redirectTo: "/auth/login" });
 };
 
 export default function Index() {

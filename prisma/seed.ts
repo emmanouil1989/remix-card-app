@@ -18,6 +18,7 @@ async function userFactory(
     email: `pelatis${index}@gmail.com`,
     password: hashedPassword,
     mobilePhone: faker.phone.number(),
+    emailVerifiedAt: faker.date.past(),
     role: Role.USER,
     bookings: {
       create: bookingsFactory(storeId, service),
@@ -78,6 +79,7 @@ async function main() {
   await prisma.service.deleteMany();
   await prisma.booking.deleteMany();
   await prisma.session.deleteMany();
+  await prisma.verificationToken.deleteMany();
   await prisma.store.create({
     data: {
       name: "Barber Shop 1963",
