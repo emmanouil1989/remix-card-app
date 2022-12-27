@@ -30,7 +30,6 @@ export async function action({ request }: ActionArgs) {
     return validationError({
       fieldErrors: { password: "Invalid credentials!" },
     });
-  // if (user && !use) return json({ errors: 'Your email not verified!' })
 
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie"),
@@ -77,6 +76,9 @@ export default function Login() {
         </div>
         <div className={"flex flex-col justify-between py-4"}>
           <Input type={"password"} name={"password"} label={"Password:"} />
+        </div>
+        <div className={"py-4"}>
+          <Link to={"/auth/forget-password"}>Forgot your password?</Link>
         </div>
         <div className={"flex row justify-between items-center w-full"}>
           <Link

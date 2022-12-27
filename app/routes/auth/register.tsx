@@ -80,7 +80,7 @@ export async function action({ request }: ActionArgs) {
 }
 
 const isUserType = (data: any): data is SerializeFrom<{ user: User }> => {
-  return data && data.user !== undefined && data.user.email !== undefined;
+  return data != undefined && typeof data === "object" && "user" in data;
 };
 export default function Register() {
   const actionData = useActionData<typeof action>();

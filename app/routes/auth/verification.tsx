@@ -1,10 +1,10 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node";
 import {
   authenticator,
   getVerificationToken,
   verifyEmail,
 } from "~/services/auth.server";
-import { json, SerializeFrom } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { compareAsc } from "date-fns";
 
@@ -26,8 +26,6 @@ export async function loader({ request }: LoaderArgs) {
     });
   }
 
-  console.log("date now", new Date().getDate());
-  console.log("exipres", verificationToken.expires.getDate());
   if (compareAsc(new Date(), verificationToken.expires) === 1) {
     return json({
       error: "Registration Token Expired",

@@ -1,6 +1,6 @@
 import { prisma } from "~/db.server";
 import bcrypt from "bcrypt";
-import { Prisma, User } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 export async function getUserByEmailAddress(emailAddress: string) {
   return await prisma.user.findUnique({
@@ -25,6 +25,26 @@ export async function registerUser({
       email,
       password: hashedPassword,
       mobilePhone,
+    },
+  });
+}
+
+export async function getUserById(id: string) {
+  return await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+export async function updateUserPassword(email: string, newPassword: string) {
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  return await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      password: hashedPassword,
     },
   });
 }
