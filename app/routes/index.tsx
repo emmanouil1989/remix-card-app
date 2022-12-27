@@ -1,7 +1,10 @@
 import { authenticator } from "~/services/auth.server";
-import { ActionFunction, json, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import React from "react";
 import { Form } from "@remix-run/react";
+import Button from "~/components/button/Button";
+import { toast } from "react-toastify";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await authenticator.isAuthenticated(request, {
@@ -20,8 +23,9 @@ export default function Index() {
       <h1 className="text-3xl font-bold underline text-green-500">
         Hello world!
       </h1>
+      <Button onClick={() => toast.success("hoooray")}>asdfasdf</Button>
       <Form method="post">
-        <button>Log Out</button>
+        <Button>Log Out</Button>
       </Form>
     </>
   );

@@ -14,6 +14,7 @@ import {
 } from "~/services/auth.server";
 import { compareAsc } from "date-fns";
 import { getUserById, updateUserPassword } from "~/services/user.server";
+import { getDomainUrl } from "~/services/misc.server";
 
 const validator = withZod(
   z
@@ -36,21 +37,27 @@ export async function loader({ request }: LoaderArgs) {
   });
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
+  const redirectUrl = new URL(`${getDomainUrl(request)}/auth/login`);
+
   if (!token) {
-    return json({ error: "No Registration Token Found" }, { status: 400 });
+    redirectUrl.searchParams.set("error", "No Registration Token Found");
+    return redirect(redirectUrl.toString());
   }
   const verificationToken = await getVerificationToken(token);
   if (!verificationToken) {
-    return json({ error: "Invalid token" }, { status: 400 });
+    redirectUrl.searchParams.set("error", "Invalid Registration Token");
+    return redirect(redirectUrl.toString());
   }
 
   if (compareAsc(new Date(), verificationToken.expires) === 1) {
-    return json({ error: "Token has expired" }, { status: 400 });
+    redirectUrl.searchParams.set("error", "Registration Token Expired");
+    return redirect(redirectUrl.toString());
   }
 
   const user = await getUserById(verificationToken.userId);
   if (!user) {
-    return json({ error: "No User Found" }, { status: 400 });
+    redirectUrl.searchParams.set("error", "No user found for token");
+    return redirect(redirectUrl.toString());
   }
 
   await deleteVerificationToken(token);
@@ -82,11 +89,6 @@ export default function ResetPassword() {
   return (
     <section className={"flex items-center justify-center h-full flex-col"}>
       <h1>Password Reset Page</h1>
-      {!isEmailType(loaderData) && (
-        <span className={"text-red-600 font-bold text-2xl"}>
-          {loaderData.error}
-        </span>
-      )}
       <ValidatedForm
         validator={validator}
         method={"post"}

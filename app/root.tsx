@@ -8,6 +8,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import toastifyCSS from "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -16,7 +18,10 @@ export const meta: MetaFunction = () => ({
 });
 
 export function links() {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: styles },
+    { rel: "stylesheet", href: toastifyCSS },
+  ];
 }
 
 export default function App() {
@@ -28,6 +33,18 @@ export default function App() {
       </head>
       <body>
         <Outlet />
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

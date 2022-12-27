@@ -9,6 +9,8 @@ import z from "zod";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { Input } from "~/components/Form/Input/Input";
 import { SubmitButton } from "~/components/Form/SubmitButton/SubmitButton";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const validator = withZod(
   z.object({
@@ -47,13 +49,20 @@ export async function loader({ request }: LoaderArgs) {
   await authenticator.isAuthenticated(request, {
     successRedirect: "/",
   });
-  return json({ defaultValues: { email: "", password: "" } });
+  const url = new URL(request.url);
+  const error = url.searchParams.get("error");
+  return json({ defaultValues: { email: "", password: "" }, error });
 }
 
 export default function Login() {
-  const [params] = useSearchParams();
-  const { defaultValues } = useLoaderData<typeof loader>();
-
+  const [params, setSearchParams] = useSearchParams();
+  const { defaultValues, error } = useLoaderData<typeof loader>();
+  useEffect(() => {
+    setSearchParams({});
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
   return (
     <section
       className={"w-full h-full flex justify-center items-center flex-col"}

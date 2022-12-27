@@ -4,9 +4,10 @@ import {
   getVerificationToken,
   verifyEmail,
 } from "~/services/auth.server";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { compareAsc } from "date-fns";
+import { getDomainUrl } from "~/services/misc.server";
 
 export async function loader({ request }: LoaderArgs) {
   await authenticator.isAuthenticated(request, {
@@ -14,22 +15,20 @@ export async function loader({ request }: LoaderArgs) {
   });
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
+  const redirectUrl = new URL(`${getDomainUrl(request)}/auth/login`);
   if (!token) {
-    return json({
-      error: "Registration Token is Required",
-    });
+    redirectUrl.searchParams.set("error", "No Registration Token Found");
+    return redirect(redirectUrl.toString());
   }
   const verificationToken = await getVerificationToken(token);
   if (!verificationToken) {
-    return json({
-      error: "Invalid Registration Token",
-    });
+    redirectUrl.searchParams.set("error", "Invalid token");
+    return redirect(redirectUrl.toString());
   }
 
   if (compareAsc(new Date(), verificationToken.expires) === 1) {
-    return json({
-      error: "Registration Token Expired",
-    });
+    redirectUrl.searchParams.set("error", "Token has expired");
+    return redirect(redirectUrl.toString());
   }
   await verifyEmail(verificationToken);
   return json({ success: true }, { status: 200 });
