@@ -46,9 +46,33 @@ export async function action({ request }: ActionArgs) {
   );
   const url = new URL(`${getDomainUrl(request)}/auth/reset-password`);
   url.searchParams.set("token", verificationToken.token);
-  //send Email
-  console.log(url.toString());
 
+  // const response = await sendEmail({
+  //   to: existingUserEmail,
+  //   subject: "Reset password Barbershop 1963",
+  //   text: `Please verify your email by opening ${url}`,
+  //   html: `
+  // 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  // 	<html>
+  // 		<head>
+  // 			<meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+  // 		</head>
+  // 		<body>
+  // 			<h1>Reset Password For Barbershop 1963</h1>
+  // 			<p>Click the link below to reset it:</p>
+  // 			<a href="${url}">${url}</a>
+  // 		</body>
+  // 	`,
+  // });
+
+  // if (!response.ok) {
+  //   return validationError({
+  //     fieldErrors: {
+  //       email: "Could not send reset password email",
+  //     },
+  //   });
+  // }
+  console.log(url, "url");
   return json({ user: existingUser }, { status: 200 });
 }
 
