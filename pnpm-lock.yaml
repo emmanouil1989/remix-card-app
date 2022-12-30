@@ -33,6 +33,7 @@ specifiers:
   react-toastify: ^9.1.1
   remix-auth: ^3.4.0
   remix-auth-form: ^1.3.0
+  remix-flat-routes: ^0.5.6
   remix-validated-form: ^4.6.5
   tailwindcss: ^3.1.8
   tiny-invariant: ^1.3.1
@@ -78,6 +79,7 @@ devDependencies:
   prettier: 2.7.1
   prettier-plugin-organize-imports: 3.2.1_uir2yqknvvf76pjxetxlsc2r4a
   prisma: 4.7.1
+  remix-flat-routes: 0.5.6
   tailwindcss: 3.2.4_ra2vnoek4vhbzktaezawwqbin4
   ts-node: 10.9.1_rmyookn2hbqnnqjamditnjqvjq
   typescript: 4.9.4
@@ -2836,6 +2838,12 @@ packages:
     dependencies:
       balanced-match: 1.0.2
       concat-map: 0.0.1
+
+  /brace-expansion/2.0.1:
+    resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
+    dependencies:
+      balanced-match: 1.0.2
+    dev: true
 
   /braces/2.3.2:
     resolution: {integrity: sha512-aNdbnj9P8PjdXU4ybaWLK2IF3jc/EoDYbC7AazW6to3TRsfXxscC9UXOB5iDiEQrkyIbWp2SLQda4+QAa7nc3w==}
@@ -6096,6 +6104,13 @@ packages:
     dependencies:
       brace-expansion: 1.1.11
 
+  /minimatch/5.1.2:
+    resolution: {integrity: sha512-bNH9mmM9qsJ2X4r2Nat1B//1dJVcn3+iBLa3IgqJ7EbGaDNepL9QSHOxN4ng33s52VMMhhIfgCYDk3C4ZmlDAg==}
+    engines: {node: '>=10'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist/1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
     dev: true
@@ -7243,6 +7258,13 @@ packages:
       '@remix-run/server-runtime': 1.9.0_biqbaboplfbrettd7655fr4n2y
       uuid: 8.3.2
     dev: false
+
+  /remix-flat-routes/0.5.6:
+    resolution: {integrity: sha512-Y+cB9Fg5L21FGSpW703tMsoORgC02Qa4BS6JG/TOM0ccDSvPDpkl/XAbg86JtZ/9aytSa7nUORlcB1725y8kAQ==}
+    hasBin: true
+    dependencies:
+      minimatch: 5.1.2
+    dev: true
 
   /remix-validated-form/4.6.5_5crqyhwcr4sexj24a5r7gwqgou:
     resolution: {integrity: sha512-pf6048rqhsT0lJGDvK8vapAuCITz0L05SyjSvkPNu+2t5DZAlUQaZaR1NMPu7se9RbRh1WeEUa7JWvv8HE9NrQ==}
