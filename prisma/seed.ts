@@ -1,4 +1,5 @@
-import { PrismaClient, Role, Prisma, StoreServices } from "@prisma/client";
+import type { Prisma, StoreServices } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import bycript from "bcrypt";
 
@@ -112,6 +113,7 @@ async function main() {
       email: "emmanouil.e@hotmail.com",
       password: "$2a$04$2t9xcOy71K4QqkENc2NWS.c3sVrfrOKC8DSH5n39dDMbTb.HSLWEK",
       mobilePhone: "6971234567",
+      emailVerifiedAt: faker.date.past(),
       role: Role.ADMIN,
     },
   });
