@@ -11,6 +11,7 @@ import { getUserByEmailAddress, registerUser } from "~/services/user.server";
 import { getDomainUrl } from "~/services/misc.server";
 import { Link, useActionData } from "@remix-run/react";
 import type { User } from "@prisma/client";
+import { useSendNotification } from "~/utils/notification";
 const validator = withZod(
   z
     .object({
@@ -106,6 +107,11 @@ const isUserType = (data: any): data is SerializeFrom<{ user: User }> => {
 };
 export default function Register() {
   const actionData = useActionData<typeof action>();
+  const user = isUserType(actionData) ? actionData.user : null;
+  const notificationMessage = user
+    ? `Verification email sent to ${user?.email}`
+    : null;
+  useSendNotification("Success", notificationMessage);
 
   return (
     <section className={"flex items-center justify-center h-full flex-col"}>
@@ -115,11 +121,6 @@ export default function Register() {
         method={"post"}
         className={"flex flex-col items-start justify-between w-3/12"}
       >
-        {isUserType(actionData) && (
-          <span className={"text-green-400"}>
-            Verification link has been sent to {actionData.user.email}
-          </span>
-        )}
         <div className={"flex flex-col w-full justify-between py-4"}>
           <Input name={"firstName"} label={"First Name"} type={"text"} />
         </div>

@@ -9,8 +9,7 @@ import z from "zod";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { Input } from "~/components/Form/Input/Input";
 import { SubmitButton } from "~/components/Form/SubmitButton/SubmitButton";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { useSendNotification } from "~/utils/notification";
 
 export const validator = withZod(
   z.object({
@@ -27,6 +26,10 @@ export async function action({ request }: ActionArgs) {
   const redirectTo = fieldValues.submittedData.redirectTo || "/";
   const { email, password } = fieldValues.data;
   const user = await login(email, password);
+  if (user && !user.emailVerifiedAt)
+    return validationError({
+      fieldErrors: { email: "Email not verified" },
+    });
 
   if (!user)
     return validationError({
@@ -51,18 +54,20 @@ export async function loader({ request }: LoaderArgs) {
   });
   const url = new URL(request.url);
   const error = url.searchParams.get("error");
-  return json({ defaultValues: { email: "", password: "" }, error });
+  const notificationMessage = url.searchParams.get("notificationMessage");
+  return json({
+    defaultValues: { email: "", password: "" },
+    error,
+    notificationMessage,
+  });
 }
 
 export default function Login() {
-  const [params, setSearchParams] = useSearchParams();
-  const { defaultValues, error } = useLoaderData<typeof loader>();
-  useEffect(() => {
-    setSearchParams({});
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
+  const [params] = useSearchParams();
+  const { defaultValues, error, notificationMessage } =
+    useLoaderData<typeof loader>();
+  useSendNotification("Error", error);
+  useSendNotification("Success", notificationMessage);
   return (
     <section
       className={"w-full h-full flex justify-center items-center flex-col"}

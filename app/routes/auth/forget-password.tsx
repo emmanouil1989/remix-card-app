@@ -11,6 +11,7 @@ import z from "zod";
 import { getUserByEmailAddress } from "~/services/user.server";
 import { getDomainUrl } from "~/services/misc.server";
 import type { User } from "@prisma/client";
+import { useSendNotification } from "~/utils/notification";
 
 const validator = withZod(
   z.object({
@@ -81,14 +82,13 @@ const isUserType = (data: unknown): data is SerializeFrom<{ user: User }> => {
 };
 export default function ForgetPassword() {
   const actionData = useActionData<typeof action>();
-
+  const user = isUserType(actionData) ? actionData.user : undefined;
+  const notificationMessage = user
+    ? `A verification code has been sent to ${user?.email}`
+    : null;
+  useSendNotification("Success", notificationMessage);
   return (
     <section className={"flex items-center justify-center h-full flex-col"}>
-      {isUserType(actionData) && (
-        <span className={"text-green-400 font-bold text-2xl"}>
-          A verification code has been sent to {actionData.user.email}
-        </span>
-      )}
       <ValidatedForm
         validator={validator}
         method={"post"}

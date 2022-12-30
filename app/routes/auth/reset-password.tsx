@@ -72,7 +72,12 @@ export async function action({ request }: ActionArgs) {
   const { password } = fieldValues.data;
 
   await updateUserPassword(email, password);
-  return redirect("/auth/login");
+  const redirectURL = new URL(`${getDomainUrl(request)}/auth/login`);
+  redirectURL.searchParams.set(
+    "notificationMessage",
+    "You have successfully reset your password",
+  );
+  return redirect(redirectURL.toString());
 }
 
 const isEmailType = (
