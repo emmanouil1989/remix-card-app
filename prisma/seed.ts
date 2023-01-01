@@ -67,9 +67,10 @@ function bookingsFactory(
 
 function storeServicesFactory(): Array<Prisma.StoreServicesCreateWithoutStoreInput> {
   return services.map(function mapToService(serviceName) {
+    const price = faker.random.numeric(2);
     return {
       name: serviceName,
-      price: Number(faker.commerce.price()),
+      price: Number(price),
     };
   });
 }
