@@ -6,7 +6,7 @@ module.exports = {
     process.env.NETLIFY || process.env.NETLIFY_LOCAL
       ? "./server.js"
       : undefined,
-  ignoredRouteFiles: ["**/.*"],
+  ignoredRouteFiles: ["**/*"],
   routes: async defineRoutes => {
     return flatRoutes("routes", defineRoutes);
   },
