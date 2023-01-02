@@ -7,6 +7,7 @@ import type { StoreServices } from "@prisma/client";
 import Toggle from "~/components/toggle/Toggle";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import React from "react";
 
 export async function loader() {
   const store = await prisma.store.findFirst();
@@ -42,7 +43,7 @@ export default function AdminServices() {
     <div className={"flex w-full h-full flex-row items-center"}>
       <ul className={"w-full flex flex-col h-full justify-evenly"}>
         {storeServices.map(service => {
-          return <ServiceListItem service={service} />;
+          return <ServiceListItem key={service.id} service={service} />;
         })}
       </ul>
       <Outlet />
@@ -72,10 +73,10 @@ function ServiceListItem({
       }
       key={service.id}
     >
-      <ListItemContainer className={"w-3/6"}>
+      <ListItemContainer className={"sm:w-3/6 w-full"}>
         <span>{service.name}</span>
       </ListItemContainer>
-      <ListItemContainer className={"justify-start"}>
+      <ListItemContainer className={"lg:justify-start justify-center"}>
         <span>{service.price}</span>
       </ListItemContainer>
       <ListItemContainer className={"justify-end px-4"}>

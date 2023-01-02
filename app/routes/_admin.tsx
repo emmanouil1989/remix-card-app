@@ -20,11 +20,13 @@ export async function loader({ request }: LoaderArgs) {
 export default function AdminServices() {
   return (
     <section
-      className={"flex flex-col w-full h-full justify-center items-center"}
+      className={
+        "flex flex-col w-full h-full xl:justify-center xl:items-center"
+      }
     >
       <div
         className={
-          "flex w-full xl:w-[1200px] justify-start  flex-col h-full p-8"
+          "flex w-full xl:w-[1200px] justify-start  flex-col h-full sm:p-8 p-4"
         }
       >
         <h1 className={"py-4 text-3xl font-bold"}>Admin</h1>
