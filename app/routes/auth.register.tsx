@@ -119,7 +119,9 @@ export default function Register() {
       <ValidatedForm
         validator={validator}
         method={"post"}
-        className={"flex flex-col items-start justify-between w-3/12"}
+        className={
+          "flex flex-col items-start justify-between w-[300px] sm:w-[400px]"
+        }
       >
         <div className={"flex flex-col w-full justify-between py-4"}>
           <Input name={"firstName"} label={"First Name"} type={"text"} />

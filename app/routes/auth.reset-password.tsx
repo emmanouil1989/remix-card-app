@@ -92,12 +92,18 @@ export default function ResetPassword() {
     ? loaderData.email
     : undefined;
   return (
-    <section className={"flex items-center justify-center h-full flex-col"}>
+    <section
+      className={
+        "flex p-8 sm:p-0 sm:items-center justify-center h-full flex-col"
+      }
+    >
       <h1>Password Reset Page</h1>
       <ValidatedForm
         validator={validator}
         method={"post"}
-        className={"flex flex-col items-start justify-between w-4/12"}
+        className={
+          "flex flex-col items-start justify-between w-[300px] sm:w-[400px]"
+        }
       >
         <input type="hidden" name="email" value={hiddenEmailValue} />
         <div className={"flex flex-col w-full justify-between py-4"}>
@@ -112,10 +118,14 @@ export default function ResetPassword() {
           />
         </div>
 
-        <div className={"flex justify-between w-full items-center"}>
+        <div
+          className={
+            "flex  flex-col sm:flex-row sm:gap-0 gap-4 justify-between w-full items-center"
+          }
+        >
           <Link
             className={
-              " bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              " bg-gray-500 hover:bg-gray-700 flex justify-center text-white font-bold py-2 px-4 rounded"
             }
             to={"/"}
           >

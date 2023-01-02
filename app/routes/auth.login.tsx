@@ -69,16 +69,14 @@ export default function Login() {
   useSendNotification("Error", error);
   useSendNotification("Success", notificationMessage);
   return (
-    <section
-      className={"w-full h-full flex justify-center items-center flex-col"}
-    >
+    <section className={"flex h-full justify-center items-center flex-col"}>
       <h1>Login</h1>
 
       <ValidatedForm
         method={"post"}
         validator={validator}
         defaultValues={defaultValues}
-        className={" min-h-max p-8 w-3/12 "}
+        className={" min-h-max p-8 w-[400px] "}
       >
         <input
           type="hidden"
@@ -94,7 +92,7 @@ export default function Login() {
         <div className={"py-4"}>
           <Link to={"/auth/forget-password"}>Forgot your password?</Link>
         </div>
-        <div className={"flex row justify-between items-center w-full"}>
+        <div className={"flex flex-row justify-between items-center w-full"}>
           <Link
             className={
               " bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"

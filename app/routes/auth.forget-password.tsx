@@ -92,16 +92,22 @@ export default function ForgetPassword() {
       <ValidatedForm
         validator={validator}
         method={"post"}
-        className={"flex flex-col items-start justify-between w-3/12"}
+        className={
+          "flex flex-col items-start justify-between sm:w-[400px] w-[300px]"
+        }
       >
         <div className={"flex flex-col w-full justify-between py-4"}>
           <Input name={"email"} label={"Email:"} type={"email"} />
         </div>
 
-        <div className={"flex justify-between w-full items-center"}>
+        <div
+          className={
+            "flex flex-col sm:flex-row justify-between w-full items-center gap-4 sm:gap-0"
+          }
+        >
           <Link
             className={
-              " bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
             }
             to={"/"}
           >
