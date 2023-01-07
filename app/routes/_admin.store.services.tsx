@@ -1,10 +1,9 @@
-import { Outlet, useFetcher, useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import type { ActionArgs, SerializeFrom } from "@remix-run/node";
 import { prisma } from "~/db.server";
 import invariant from "tiny-invariant";
 import { json } from "@remix-run/node";
 import type { StoreServices } from "@prisma/client";
-import Toggle from "~/components/toggle/Toggle";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import React from "react";
@@ -40,8 +39,12 @@ export async function action({ request }: ActionArgs) {
 export default function AdminServices() {
   const { storeServices } = useLoaderData<typeof loader>();
   return (
-    <div className={"flex w-full h-full flex-row items-center"}>
-      <ul className={"w-full flex flex-col h-full justify-evenly"}>
+    <div className={"flex w-full h-full flex-row items-center "}>
+      <ul
+        className={
+          "w-full flex flex-col h-full gap-4 pt-4 overflow-y-auto overflow-x-hidden"
+        }
+      >
         {storeServices.map(service => {
           return <ServiceListItem key={service.id} service={service} />;
         })}
@@ -56,31 +59,19 @@ function ServiceListItem({
 }: {
   service: SerializeFrom<StoreServices>;
 }) {
-  const fetcher = useFetcher();
-  const onClick = () => {
-    fetcher.submit(
-      { id: service.id, enabled: JSON.stringify(!service.enabled) },
-      {
-        method: "patch",
-        action: "/store/services",
-      },
-    );
-  };
   return (
     <li
       className={
         "p-4 border border-solid border-gray-600 flex flex-row justify-between"
       }
-      key={service.id}
     >
-      <ListItemContainer className={"sm:w-3/6 w-full"}>
-        <span>{service.name}</span>
+      <ListItemContainer className={" w-full"}>
+        <Link to={`/store/services/${service.id}`} key={service.id}>
+          <span>{service.name}</span>{" "}
+        </Link>
       </ListItemContainer>
-      <ListItemContainer className={"lg:justify-start justify-center"}>
+      <ListItemContainer className={"justify-end pr-4"}>
         <span>{service.price}</span>
-      </ListItemContainer>
-      <ListItemContainer className={"justify-end px-4"}>
-        <Toggle on={service.enabled} onClick={onClick} />
       </ListItemContainer>
     </li>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import { Input } from "~/components/Form/Input/Input";
 
 export default function Toggle(props: SwitchProps) {
   return <Switch {...props} />;
@@ -7,8 +8,9 @@ export default function Toggle(props: SwitchProps) {
 type SwitchProps = {
   on: boolean;
   onClick: () => void;
+  name?: string;
 };
-function Switch({ on, onClick }: SwitchProps) {
+function Switch({ on, onClick, name }: SwitchProps) {
   return (
     <div
       onClick={onClick}
@@ -18,6 +20,9 @@ function Switch({ on, onClick }: SwitchProps) {
         
         `}
     >
+      {name && (
+        <Input name={name} label={""} type={"text"} className={"hidden"} />
+      )}
       <span
         className={`
             w-6 h-6 transform bg-white rounded-full

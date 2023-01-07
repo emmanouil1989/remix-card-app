@@ -30,7 +30,9 @@ export default function AdminServices() {
         <h1 className={"py-4 text-3xl font-bold"}>Admin</h1>
 
         <AdminNav />
-        <Outlet />
+        <div className={"flex flex-row w-full h-full"}>
+          <Outlet />
+        </div>
       </div>
     </section>
   );
