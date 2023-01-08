@@ -60,20 +60,20 @@ function ServiceListItem({
   service: SerializeFrom<StoreServices>;
 }) {
   return (
-    <li
-      className={
-        "p-4 border border-solid border-gray-600 flex flex-row justify-between"
-      }
-    >
-      <ListItemContainer className={" w-full"}>
-        <Link to={`/store/services/${service.id}`} key={service.id}>
+    <Link to={`/store/services/${service.id}`} key={service.id}>
+      <li
+        className={
+          "p-4 border border-solid border-gray-600 flex flex-row justify-between"
+        }
+      >
+        <ListItemContainer className={" w-full"}>
           <span>{service.name}</span>{" "}
-        </Link>
-      </ListItemContainer>
-      <ListItemContainer className={"justify-end pr-4"}>
-        <span>{service.price}</span>
-      </ListItemContainer>
-    </li>
+        </ListItemContainer>
+        <ListItemContainer className={"justify-end pr-4"}>
+          <span>{service.price}</span>
+        </ListItemContainer>
+      </li>
+    </Link>
   );
 }
 

@@ -8,7 +8,6 @@ import zod from "zod";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { Input } from "~/components/Form/Input/Input";
 import Toggle from "~/components/toggle/Toggle";
-import { useState } from "react";
 import { SubmitButton } from "~/components/Form/SubmitButton/SubmitButton";
 
 const Validator = withZod(
@@ -25,13 +24,12 @@ export async function action({ request, params }: ActionArgs) {
   const fieldValues = await Validator.validate(await request.formData());
   if (fieldValues.error) return validationError(fieldValues.error);
   const { name, price, enabled } = fieldValues.data;
-
   await prisma.storeServices.update({
     where: { id: serviceId },
     data: {
       name,
       price: Number(price),
-      enabled: Boolean(enabled),
+      enabled: enabled === "true",
     },
   });
   return redirect("/store/services");
@@ -51,11 +49,11 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function ViewServicePage() {
   const { service } = useLoaderData<typeof loader>();
-  const [toggle, setToggle] = useState(service.enabled);
   return (
     <section className={"flex flex-col w-full h-full pt-4 items-center"}>
       <h1>{service.name}</h1>
       <ValidatedForm
+        key={service.id}
         validator={Validator}
         method={"post"}
         className={"flex flex-col gap-4 h-full w-full p-8"}
@@ -71,18 +69,14 @@ export default function ViewServicePage() {
         <div className={"flex flex-col "}>
           <Input name={"price"} label={"Price:"} type={"number"} />
         </div>
-        <div className={"flex  gap-4"}>
+        <div key={service.id} className={"flex  gap-4"}>
           <label htmlFor={"enabled"}>Enabled:</label>
-          <Toggle
-            name={"enabled"}
-            on={toggle}
-            onClick={() => setToggle(!toggle)}
-          />
+          <Toggle name={"enabled"} initialValue={service.enabled} />
         </div>
         <div className={"flex flex-col gap-4"}>
           <SubmitButton
             submitText={"Update Service"}
-            submittingText={"Updating your service"}
+            submittingText={"Updating your service..."}
           />
         </div>
       </ValidatedForm>
