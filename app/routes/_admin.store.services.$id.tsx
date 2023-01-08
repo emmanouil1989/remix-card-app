@@ -2,13 +2,13 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { prisma } from "~/db.server";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useTransition } from "@remix-run/react";
 import { withZod } from "@remix-validated-form/with-zod";
 import zod from "zod";
 import { ValidatedForm, validationError } from "remix-validated-form";
 import { Input } from "~/components/Form/Input/Input";
 import Toggle from "~/components/toggle/Toggle";
-import { SubmitButton } from "~/components/Form/SubmitButton/SubmitButton";
+import Button from "~/components/button/Button";
 
 const Validator = withZod(
   zod.object({
@@ -21,7 +21,17 @@ const Validator = withZod(
 export async function action({ request, params }: ActionArgs) {
   const serviceId = params.id;
   invariant(serviceId, "Service ID is required");
-  const fieldValues = await Validator.validate(await request.formData());
+  const formData = await request.formData();
+  const isDelete = formData.get("intent");
+  if (isDelete === "delete") {
+    await prisma.storeServices.delete({
+      where: {
+        id: serviceId,
+      },
+    });
+    return redirect("/store/services");
+  }
+  const fieldValues = await Validator.validate(formData);
   if (fieldValues.error) return validationError(fieldValues.error);
   const { name, price, enabled } = fieldValues.data;
   await prisma.storeServices.update({
@@ -49,14 +59,18 @@ export async function loader({ params }: LoaderArgs) {
 
 export default function ViewServicePage() {
   const { service } = useLoaderData<typeof loader>();
+
+  const transition = useTransition();
+  const isUpdating = transition.submission?.formData.get("intent") === "update";
+  const isDeleting = transition.submission?.formData.get("intent") === "delete";
   return (
-    <section className={"flex flex-col w-full h-full pt-4 items-center"}>
+    <section className={"flex flex-col w-full h-full pt-4 items-center p-8"}>
       <h1>{service.name}</h1>
       <ValidatedForm
         key={service.id}
         validator={Validator}
         method={"post"}
-        className={"flex flex-col gap-4 h-full w-full p-8"}
+        className={"flex flex-col gap-4 w-full h-full"}
         defaultValues={{
           name: service.name,
           price: service.price.toString(),
@@ -73,11 +87,23 @@ export default function ViewServicePage() {
           <label htmlFor={"enabled"}>Enabled:</label>
           <Toggle name={"enabled"} initialValue={service.enabled} />
         </div>
-        <div className={"flex flex-col gap-4"}>
-          <SubmitButton
-            submitText={"Update Service"}
-            submittingText={"Updating your service..."}
-          />
+        <div className={"flex flex-row gap-4"}>
+          <Button
+            type={"submit"}
+            className={"button"}
+            name={"intent"}
+            value={"update"}
+          >
+            {isUpdating ? "Updating your service..." : "Update Service"}
+          </Button>
+          <Button
+            type={"submit"}
+            name={"intent"}
+            value={"delete"}
+            className={"bg-red-600 hover:bg-red-700"}
+          >
+            {isDeleting ? "Deleting service..." : "Delete Service"}
+          </Button>
         </div>
       </ValidatedForm>
     </section>

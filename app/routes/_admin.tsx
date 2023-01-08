@@ -45,6 +45,7 @@ function AdminNav() {
         <AdminListItem to={"/store/services"} itemName={"Services"} />
         <AdminListItem to={"/store/bookings"} itemName={"Bookings"} />
         <AdminListItem to={"/store/gallery"} itemName={"Gallery"} />
+        <AdminListItem itemName={"home"} to={"/"} />
       </ul>
     </nav>
   );
