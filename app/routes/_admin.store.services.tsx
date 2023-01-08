@@ -39,18 +39,26 @@ export async function action({ request }: ActionArgs) {
 export default function AdminServices() {
   const { storeServices } = useLoaderData<typeof loader>();
   return (
-    <div className={"flex w-full h-full flex-row items-center "}>
-      <ul
-        className={
-          "w-full flex flex-col h-full gap-4 pt-4 overflow-y-auto overflow-x-hidden"
-        }
-      >
-        {storeServices.map(service => {
-          return <ServiceListItem key={service.id} service={service} />;
-        })}
-      </ul>
-      <Outlet />
-    </div>
+    <section className={"flex flex-col h-full w-full"}>
+      <div className={"pt-4 flex justify-end"}>
+        <Link to={"/store/services/new"} className={"button"}>
+          Create Service
+        </Link>
+      </div>
+
+      <div className={"flex w-full h-full flex-row items-center "}>
+        <ul
+          className={
+            "w-full flex flex-col h-full gap-4 pt-4 overflow-y-auto overflow-x-hidden"
+          }
+        >
+          {storeServices.map(service => {
+            return <ServiceListItem key={service.id} service={service} />;
+          })}
+        </ul>
+        <Outlet />
+      </div>
+    </section>
   );
 }
 

@@ -64,7 +64,9 @@ export default function ViewServicePage() {
   const isUpdating = transition.submission?.formData.get("intent") === "update";
   const isDeleting = transition.submission?.formData.get("intent") === "delete";
   return (
-    <section className={"flex flex-col w-full h-full pt-4 items-center p-8"}>
+    <section
+      className={"flex flex-col w-full h-full pt-4 items-center pt-4 pl-8"}
+    >
       <h1>{service.name}</h1>
       <ValidatedForm
         key={service.id}
